@@ -1,0 +1,50 @@
+<div>
+
+    <h2>Realtime productos</h2>
+    <hr>
+
+    <form id="formProduct" class="form-group">
+        <imput type="text" name="title" id="title">
+        <imput type="submit" value="enviar">
+    </form>
+
+    <div>
+        <div
+            id="ListProducts"> 
+        </div>
+    </div>
+</div>
+
+{{!--<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js"></script>--}}
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    console.log("socket")
+    const socket = io ()
+
+    let form = document.querySelector("#formProduct")
+
+    form.addEventListener("submit", evt => {
+        evt.preventDefault()
+        let title = form.elements.title.value
+        console.log(title)
+        if (title == "") {
+            socket.emit("addProduct", {
+            title
+        })
+        }
+        form.reset()
+    })
+
+    socket.on ("productos", data => {
+        console.log(data)
+        
+        let div = document.getElementById(" ListProducts")
+        let productos = ""
+        data.forEach(({product}) => {
+            productos += "<div>${product.title} precio: ${product.price}</div>"
+        })
+        log. innerHTML = productos
+    })
+
+</script>
+
