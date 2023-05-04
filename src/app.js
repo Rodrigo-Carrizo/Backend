@@ -1,15 +1,15 @@
 const express = require('express')
 const cookieParser = require('cookie-parser')
-
+const objectConfig = require('./config/objetConfig.js')
 const { uploader } = require('./utils/multer')
 const userRouter = require('./routes/users.router')
 const productRouter = require('./routes/products.router')
 const viewsRouter = require('./routes/views.router')
-
+//__________________________________________________________________________
 const { Server } = require('socket.io')
 
 const app = express()
-const PORT = 8080
+const PORT = 8080 
 
 const httpServer = app.listen(PORT,()=>{
     console.log(`Escuchando en el puerto: ${PORT}`)
@@ -17,14 +17,15 @@ const httpServer = app.listen(PORT,()=>{
 
 const io = new Server(httpServer)
 
+objectConfig.connectDB()
 
+// hbs __________________________________________________________________
 const handlebars = require('express-handlebars')
-const { socketChat } = require('./utils/socketChat')
-const { socketProduct } = require('./utils/socketProduct')
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname+'/views')
 app.set('view engine', 'handlebars')
+// hbs __________________________________________
 
 
 app.use(express.json()) 
@@ -47,32 +48,22 @@ app.post('/single', uploader.single('myfile'), (req, res)=>{
     })
 })
 
-socketChat(io)
-socketProduct(io)
-
-app.get('/chat', (req, res)=>{
-    res.render('chat', {})
-})
+let messages = []
 
 io.on('connection', socket => {
     console.log('Nuevo cliente conectado')
-    console.log(socket.id)
-
-    let logs = []
-    socket.on("message1",data=>{
-        io.emit('log',data)
+    socket.on('message', data => {
+        messages.push(data)
+        io.emit('messageLogs', messages)
     })
 
-    socket.on("message2",data=>{
-        
-        logs.push({socketid:socket.id,message:data})
-
-        io.emit('log',{logs});
+    socket.on('authenticated', data => {
+        socket.broadcast.emit('newUserConnected', data)
     })
+
 })
 
 app.use((err, req, res, next)=>{
     console.log(err)
     res.status(500).send('Todo mal')
 })
-
