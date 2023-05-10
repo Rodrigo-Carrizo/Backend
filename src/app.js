@@ -19,13 +19,13 @@ const io = new Server(httpServer)
 
 objectConfig.connectDB()
 
-// hbs __________________________________________________________________
+//__________________________________________________________________
 const handlebars = require('express-handlebars')
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname+'/views')
 app.set('view engine', 'handlebars')
-// hbs __________________________________________
+//__________________________________________
 
 
 app.use(express.json()) 

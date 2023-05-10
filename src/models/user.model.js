@@ -1,11 +1,11 @@
-const {Schema, model} = require("mongoose")
+const {Schema, model} = require('mongoose')
 
-const collection = "usuarios"
+const collection = 'usuarios'
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
     first_name: String,
     last_name: {
-        type: String, 
+        type: String,
         required: true
     },
     email: {
