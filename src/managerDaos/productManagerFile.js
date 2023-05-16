@@ -18,7 +18,7 @@ class ProductManagerFile{
         
     }
 
-    async getProducts () {
+    async getProducts (){
         try {
             return await this.readFile()
         } catch (error) {
@@ -27,7 +27,7 @@ class ProductManagerFile{
     }
 
     
-    getProductById = async (id) => {
+    async getProductById(id){
         try {
             const products = await this.readFile()
             return products.find(product => product.id === id)                     
@@ -37,7 +37,7 @@ class ProductManagerFile{
     }
     
     
-    addProduct = async (newItem) => {
+    async addProduct(newItem){
         try {   
             
             let products = await this.readFile()
@@ -60,8 +60,7 @@ class ProductManagerFile{
         } catch (error) {
             return new Error(error)
         }
-    }
-    
+    }   
 }
 
 

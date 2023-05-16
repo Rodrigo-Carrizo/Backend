@@ -1,10 +1,13 @@
 const express = require('express')
+const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const objectConfig = require('./config/objetConfig.js')
 const { uploader } = require('./utils/multer')
 const userRouter = require('./routes/users.router')
 const productRouter = require('./routes/products.router')
 const viewsRouter = require('./routes/views.router')
+const cartsRouter = require('./routes/carts.router.js')
+const pruebasRouter = require('./routes/pruebas.router.js')
 //__________________________________________________________________________
 const { Server } = require('socket.io')
 
@@ -33,13 +36,23 @@ app.use(express.urlencoded({extended: true}))
 
 app.use('/static', express.static(__dirname+'/public'))
 
-app.use(cookieParser())
+app.use(session({
+    secret: "secretCoder",
+    resave: true,
+    saveUninitialized: true
+}))
+
+app.use(cookieParser('P@l@braS3crt0'))
 
 app.use('/', viewsRouter)
 
 app.use('/api/usuarios',  userRouter)
 
 app.use('/api/productos', productRouter)
+
+app.use('/api/carritos', cartsRouter)
+
+app.use('/pruebas', pruebasRouter)
 
 app.post('/single', uploader.single('myfile'), (req, res)=>{
     res.status(200).send({

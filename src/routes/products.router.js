@@ -7,8 +7,8 @@ const productManager = new ProductManagerFile()
 router.get('/', async (req, res) => {
     const listaProductos = await productManager.getProducts()
 
-    res.render('products', {
-        listaProductos
+    res.send({
+        status: "sucess", payload: products
     })
 })
 

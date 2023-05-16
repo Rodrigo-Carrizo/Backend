@@ -5,12 +5,17 @@ const router = Router()
 
 router.get('/',  async (req, res)=>{
     try {
-        
-        let users = await userModel.find()    
-        console.log(users)
-        res.send({
+        const {page=1} = req.query
+        let users = await userModel.paginate({}, {limit: 10, page: page, lean: true})
+        const {docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages} = users
+
+        res.render('users',{
             status: 'success',
-            payload: users
+            users: docs,
+            hasPrevPage,
+            hasNextPage,
+            prevPage,
+            nextPage
         })
     } catch (error) {
         console.log(error)
@@ -33,7 +38,6 @@ router.post('/', async (req, res)=>{
         
         let result =  await userModel.create(newUser) 
 
-        
         res.status(200).send({result})
     } catch (error) {
         console.log(error)
@@ -68,7 +72,6 @@ router.put('/:uid', async (req, res) => {
 router.delete('/:uid', async (req, res) => {
     try {
         let {uid} = req.params
-    
         let result = await userModel.deleteOne({_id: uid})
         res.send({status: 'success', payload: result})
         

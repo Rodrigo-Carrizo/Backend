@@ -17,6 +17,10 @@ Content-Type: application/json
   "apellido": "Sultano"
 }
 
-
 ### Productos
 GET http://localhost:8080/api/productos/
+
+
+### Carrito
+GET http://localhost:8080/api/carritos/
+

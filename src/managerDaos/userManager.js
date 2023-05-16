@@ -3,10 +3,8 @@ const crypto = require('crypto')
 
 const path = './files/Usuarios.json'
 
-
 class ManagerUsuarios {
-    
-    
+     
     consultarUsuarios = async () => {
         try {
             if (fs.existsSync(path)) {
@@ -31,18 +29,15 @@ class ManagerUsuarios {
         }
         console.log(usuario)
         usuario.salt = crypto.randomBytes(128).toString('base64')
-      
         usuario.password = crypto.createHmac('sha256', usuario.salt).update(usuario.contrasena).digest('hex')
         
         console.log(usuario)
-     
         users.push(usuario);
         await fs.promises.writeFile(path,JSON.stringify(users,null,'\t'));
         return usuario;
     }
 
     validarUsuario = async(nombre,contrasena) =>{
-        
         const usuarios = await this.consultarUsuarios();
 
         const usuarioIndex = usuarios.findIndex(u=>u.nombre===nombre)
@@ -53,7 +48,6 @@ class ManagerUsuarios {
         }
         const usuario = usuarios[usuarioIndex];
         const newHash = crypto.createHmac('sha256',usuario.salt).update(contrasena).digest('hex');
-        
         if(newHash===usuario.password){
             console.log("Logueado");
         }else{
@@ -63,4 +57,7 @@ class ManagerUsuarios {
 }
 
 module.exports =  ManagerUsuarios
+
+
+
 
