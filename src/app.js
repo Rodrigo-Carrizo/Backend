@@ -1,18 +1,18 @@
 const express = require('express')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
+
 const objectConfig = require('./config/objetConfig.js')
-const { uploader } = require('./utils/multer')
-const userRouter = require('./routes/users.router')
-const productRouter = require('./routes/products.router')
-const viewsRouter = require('./routes/views.router')
-const cartsRouter = require('./routes/carts.router.js')
-const pruebasRouter = require('./routes/pruebas.router.js')
+const appRouter = require('./routes')
+// ______________________________________________________
+
+const FileStore  = require('session-file-store')
+const {create} = require('connect-mongo') 
 //__________________________________________________________________________
 const { Server } = require('socket.io')
 
 const app = express()
-const PORT = 8080 
+const PORT = 8080
 
 const httpServer = app.listen(PORT,()=>{
     console.log(`Escuchando en el puerto: ${PORT}`)
@@ -24,42 +24,32 @@ objectConfig.connectDB()
 
 //__________________________________________________________________
 const handlebars = require('express-handlebars')
+const { connect } = require('mongoose')
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname+'/views')
 app.set('view engine', 'handlebars')
 //__________________________________________
-
-
 app.use(express.json()) 
 app.use(express.urlencoded({extended: true}))
-
 app.use('/static', express.static(__dirname+'/public'))
+app.use(cookieParser('P@l@braS3cr3t0'))
 
 app.use(session({
-    secret: "secretCoder",
-    resave: true,
-    saveUninitialized: true
-}))
+        store: create({
+            mongoUrl: 'mongodb://localhost:27017/comision39750',
+            mongoOptions: {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            },
+            ttl: 1000000*6000
+        }),
+        secret: 'secretCoder',
+        resave: false,
+        saveUninitialized: false
+})) 
 
-app.use(cookieParser('P@l@braS3crt0'))
-
-app.use('/', viewsRouter)
-
-app.use('/api/usuarios',  userRouter)
-
-app.use('/api/productos', productRouter)
-
-app.use('/api/carritos', cartsRouter)
-
-app.use('/pruebas', pruebasRouter)
-
-app.post('/single', uploader.single('myfile'), (req, res)=>{
-    res.status(200).send({
-        status: 'success',
-        message: 'se subió correctamente'
-    })
-})
+app.use(appRouter)
 
 let messages = []
 

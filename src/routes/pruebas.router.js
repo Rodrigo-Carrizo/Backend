@@ -3,7 +3,6 @@ const { auth } = require('../middlewares/autenticacion.middleware')
 
 const router = Router()
 
-
 router.get('/', (req, res)=>{
     res.render('login', {})
 })
@@ -12,8 +11,6 @@ router.post('/getcookieuser', (req, res)=> {
     
     res.cookie(username, email, {maxAge: 1000000,signed: true}).send({mensaje: 'seteado'})
 })
-
-
 
 router.get('/setCookie', (req, res)=> {
     res.cookie('CoderCookie', 'Esta es una cookie muy poderosa', {maxAge: 10000000}).send('cookie setada')
@@ -60,8 +57,6 @@ router.post('/session', (req, res)=> {
     console.log(req.session)
     res.send('login success')
 })
-
-
 
 
 router.get('/logout', (req, res)=>{
