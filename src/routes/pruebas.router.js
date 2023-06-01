@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const { auth } = require('../middlewares/autenticacion.middleware')
+const { auth } = require('../middlewares/autenticacion.middlewares')
 
 const router = Router()
 
@@ -48,7 +48,7 @@ router.get('/privada', auth,(req,res) => {
 })
 router.post('/session', (req, res)=> {
     const {username, password} = req.body
-    if (username!=='Rolz' || password!== 'Rolz123') {
+    if (username!=='rolz' || password!== 'rolz123') {
         return res.send('login failed')
     }
 
