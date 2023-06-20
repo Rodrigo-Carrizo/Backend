@@ -4,33 +4,48 @@ const { userModel } = require('../models/user.model')
 const { createHash, isValidPassword } = require('../utils/bcryptHash')
 const passport = require('passport')
 const { generateToken } = require('../utils/jwt')
+const { passportCall } = require('../passport-jwt/passportCall')
+const { authorizaton } = require('../passport-jwt/authorizarionJwtRole')
 
 const router = Router()
 
 router.post('/login', async (req, res)=> {
     const {email, password} = req.body
+
     const access_token = generateToken({
         first_name: 'rodrigo',
         last_name: 'carrizo',
-        email: 'rc@gmail.com'
+        email: 'rc@gmail.com',
+        role: 'user'
     })
     
-    res.send({
-        status: 'success',
-        message: 'login success',
-        access_token
+    res
+    .cookie('coderCookieToken', access_token,{
+        maxAge: 60*60*100,
+        httpOnly: true
     })
+    .send({
+        status: 'success',
+        message: 'login success'
+    })
+})
+
+router.get('/current', passportCall('jwt'), authorizaton('user'), (req, res)=>{
+    res.send(req.user)
 })
 
 
 router.post('/register', async (req, res) => {
     try {
         const {username,first_name, last_name, email, password} = req.body 
+       
         let token = generateToken({
             first_name: 'rodrigo',
-            last_name: 'carrizo',
+            last_name: 'Osandon',
             email: 'rc@gmail.com'
         })
+    
+    
         res.status(200).send({
             status: 'success',
             message: 'Usuario creado correctamente',
@@ -39,6 +54,7 @@ router.post('/register', async (req, res) => {
     } catch (error) {
         console.log(error)
     }
+   
 })
 
 router.get('/logout', (req, res)=>{

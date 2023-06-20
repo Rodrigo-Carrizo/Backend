@@ -1,17 +1,17 @@
-const { userModel } = require("../../models/user.model")
+const { productModel } = require("./model/product.model")
 
 class ProductManagerMongo {
     
     async getProducts(){
         try{
-            return await userModel.find({})
+            return await productModel.find({})
         }catch(err){
             return new Error(err)
         }
     }
     async getProductById(pid){
         try {            
-            return await userModel.findOne({_id: pid})
+            return await productModel.findOne({_id: pid})
         } catch (error) {
             return new Error(error)
         }
@@ -20,7 +20,7 @@ class ProductManagerMongo {
     async addProduct(newProduct){
         try {
             
-            return await userModel.create(newProduct)
+            return await productModel.create(newProduct)
         } catch (error) {
             return new Error(error)
         }

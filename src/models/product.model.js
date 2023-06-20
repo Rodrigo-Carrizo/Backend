@@ -5,13 +5,18 @@ const collection = 'products'
 const productSchema = new Schema({
     title: {
         type: String,
-        require: true
+        required: true
     },
     description: String,
-    price: Number
+    thumbnail: String, 
+    price: Number, 
+    stock: Number, 
+    code: {
+        type: String,
+        unique: true,
+        required: true
+    }
 })
-
-
 
 const productModel = model(collection, productSchema)
 

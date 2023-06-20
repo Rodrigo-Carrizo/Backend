@@ -2,27 +2,22 @@ const multer = require('multer')
 const {dirname} = require('path')
 
 const storage = multer.diskStorage({
-    destination: function(req, file, cb){
+    destination: (req, file, cb)=>{
         cb(null, `${dirname(__dirname)}/public/uploads`)
     },
-    filename: function(req, file, cb){
-        console.log('file: ', file)
-        cb(null, `${Date.now()}-${file.originalname}`)
-    } 
-})
+    filename: (req, file, callback)=>{
+        callback(null, `${Date.now()}-${file.originalname}`)
+    }
+}) 
 
 const uploader = multer({
     storage,
-    onError: function(err, next){
+    onError: (err,next)=>{
         console.log(err)
-        next()
+        next(err)
     }
 })
 
-
-module.exports = {
+module.exports={
     uploader
 }
-
-
-
