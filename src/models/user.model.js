@@ -22,7 +22,6 @@ const userSchema = new Schema({
         type: String,
         enum: ['user', 'admin'],
     }
-    
 })
 
 userSchema.plugin(mongoosePaginate)
